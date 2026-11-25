@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#041329"><title>AffiniX | Drug–Target Binding Affinity</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/static/background.css">
+</head>
+<body>
+  <video id="bgVideo" autoplay muted loop playsinline preload="auto" poster="/static/background.jpg" aria-hidden="true">
+    <source src="/static/background.mp4" type="video/mp4">
+  </video>
+  <div id="bgOverlay" aria-hidden="true"></div>
+  <section id="authView" class="auth-shell">
+    <div class="auth-card panel">
+      <a class="brand auth-brand" href="#"><span class="brand-mark">✦</span><span>AffiniX</span></a>
+      <div class="eyebrow">DRUG–TARGET BINDING AFFINITY STUDIO</div>
+      <h1>Welcome to <span>AffiniX</span></h1>
+      <p>Explore drug–target binding affinity predictions.</p>
+      <button id="guestBtn" class="guest-btn guest-main" type="button">Continue as Guest <span>→</span></button>
+      <p class="auth-footnote">Guest history is kept temporarily in this browser tab.</p>
+    </div>
+  </section>
+
+  <div id="appView" class="hidden">
+    <header class="topbar">
+      <a class="brand" href="#predict"><span class="brand-mark">✦</span><span>AffiniX</span></a>
+      <nav aria-label="Main navigation"><button class="nav-link active" data-section="predict">Predict</button><button class="nav-link" data-section="history">History</button></nav>
+      <div class="account-area"><span id="userLabel" class="user-label">Guest</span></div>
+    </header>
+
+    <main class="container">
+      <section id="predictSection">
+        <section class="slide-group">
+        <section class="hero"><div class="eyebrow">DRUG–TARGET BINDING AFFINITY</div><h1>Predict <span>Binding Affinity</span></h1><p>Estimate how strongly a drug compound binds to a target protein.</p></section>
+        <section class="input-layout">
+          <form class="panel prediction-form" id="predictionForm">
+            <h3>Prediction inputs</h3>
+            <label for="dataset">BENCHMARK DATASET</label>
+            <select id="dataset"><option value="davis">Davis — pKd prediction</option><option value="kiba">KIBA — score prediction</option></select>
+            <div class="field-grid">
+              <div class="field">
+                <label for="drugExample">DRUG PRESET</label>
+                <select id="drugExample" class="example-select" aria-label="Choose a drug SMILES example">
+                  <option value="custom">Custom</option>
+                </select>
+                <label for="smiles">DRUG SMILES</label>
+                <textarea id="smiles" maxlength="500" required placeholder="Enter SMILES notation or choose an example..."></textarea>
+                <small id="smilesCount">0 / 500 characters</small>
+              </div>
+              <div class="field">
+                <label for="proteinExample">PROTEIN PRESET</label>
+                <select id="proteinExample" class="example-select" aria-label="Choose a protein sequence example">
+                  <option value="custom">Custom</option>
+                </select>
+                <label for="protein">TARGET PROTEIN SEQUENCE</label>
+                <textarea id="protein" maxlength="1200" required placeholder="Enter amino acid sequence or choose an example..."></textarea>
+                <small id="proteinCount">0 / 1200 residues</small>
+              </div>
+            </div>
+            <button class="primary-btn" id="predictBtn" type="submit">➜ &nbsp; Predict affinity</button>
+            <p class="form-note" id="formMessage" aria-live="polite">Enter both sequences to run the selected model.</p>
+          </form>
+          <aside class="panel quick-info"><h3>Quick information</h3><p class="subheading">BEFORE YOU RUN A PREDICTION</p>
+            <div class="info-item"><span>1</span><div><b>Drug input</b><p>Enter a valid molecular SMILES string.</p></div></div>
+            <div class="info-item"><span>2</span><div><b>Protein input</b><p>Use the one-letter amino acid sequence.</p></div></div>
+            <div class="info-item"><span>3</span><div><b>Choose a dataset</b><p>Davis returns pKd; KIBA returns a KIBA score.</p></div></div>
+            <div class="info-item"><span>4</span><div><b>Research estimate</b><p>Predictions are computational estimates, not laboratory measurements.</p></div></div>
+          </aside>
+        </section>
+
+        </section>
+        <section class="slide-group">
+        <section class="section-heading result-heading"><h2>Prediction result</h2></section>
+        <section class="panel result-panel">
+          <div class="result-value"><div class="metric-kicker">PREDICTED BINDING AFFINITY</div><div class="value-line"><strong id="resultValue">—</strong><span id="resultUnit">pKd</span><em id="resultBadge" class="neutral-badge">Awaiting prediction</em></div></div>
+          <div class="affinity-meter"><div class="metric-kicker">BINDING STRENGTH</div><div class="meter-labels"><span>WEAKER</span><span>TIGHTER</span></div><div class="meter-track"><span id="meterFill"></span><i id="meterMarker"></i></div><small id="meterNote">Your prediction and interpretation will appear here.</small></div>
+        </section>
+
+        <section class="section-heading ranges-heading"><h2>How to read dataset ranges</h2><p>Illustrative interpretation guides; not clinical cutoffs.</p></section>
+        <section class="range-grid">
+          <article class="panel range-card"><h3>DAVIS — pKd</h3><p>Higher pKd indicates tighter binding.</p><div class="range-bar"><i></i><i></i><i></i></div><div class="range-labels"><span>WEAK &lt; 6.0</span><span>MODERATE 6.0–6.99</span><span>STRONG ≥ 7.0</span></div><small>Illustrative guide only.</small></article>
+          <article class="panel range-card"><h3>KIBA — transformed score</h3><p>KIBA score is not pKd; interpret on its own scale.</p><div class="range-bar"><i></i><i></i><i></i></div><div class="range-labels"><span>WEAK &lt; 11.0</span><span>MODERATE 11.0–12.09</span><span>STRONG ≥ 12.1</span></div><small>Illustrative guide only.</small></article>
+        </section>
+
+        <section class="section-heading graph-heading"><h2>Model Performance</h2><p id="chartSubtitle">Davis official test set — 500 sampled points out of 5,010</p></section>
+        <section class="panel chart-panel"><canvas id="accuracyChart" aria-label="Actual versus predicted model test-set scatter plot"></canvas><div class="legend"><span><i class="dot"></i>Test data</span><span><i class="dash"></i>Ideal (y = x)</span><span><i class="line"></i>Trend line</span><span><i class="dash" style="border-color:#ffd16a"></i>Your prediction</span></div></section>
+        <section class="panel metrics-panel"><h2>Selected model test metrics</h2><p class="metric-kicker" id="metricSubtitle">Selected checkpoint · Official held-out test set</p><div class="metrics-grid" id="metricsGrid"></div><p class="metric-disclaimer">Metrics are from the supplied selected-fold test CSV. Pearson is intentionally not displayed.</p></section>
+
+        </section>
+        <section class="slide-group">
+        <section class="science-section" aria-labelledby="scienceTitle">
+          <div class="section-heading science-heading"><h2 id="scienceTitle">Science Behind the Score</h2><p>Key concepts behind drug–target binding affinity prediction.</p></div>
+          <div class="science-grid">
+            <article class="panel science-card"><span class="science-index">01</span><h3>What is a Drug?</h3><p>A drug is a chemical substance that interacts with biological targets in the body to produce a biological effect. In AffiniX, a drug molecule is represented as a SMILES string, a text notation that describes its atoms and the bonds connecting them.</p></article>
+            <article class="panel science-card"><span class="science-index">02</span><h3>What is a Protein?</h3><p>Proteins are biological molecules made of chains of amino acids. They perform essential functions in cells, and many act as targets for drugs. In AffiniX, a protein is represented by its amino acid sequence using one-letter codes.</p></article>
+            <article class="panel science-card"><span class="science-index">03</span><h3>What is Binding Affinity?</h3><p>Binding affinity describes how strongly a drug molecule binds to a target protein. It reflects the tendency of the two molecules to associate under specified conditions. A stronger interaction generally corresponds to higher affinity.</p></article>
+            <article class="panel science-card"><span class="science-index">04</span><h3>How is Binding Affinity Estimated?</h3><p>AffiniX uses the DeepDTA deep-learning model to estimate binding affinity from the drug's SMILES representation and the protein's amino acid sequence. The model learns patterns from experimental training data and predicts a numerical score: pKd for Davis or a KIBA score for KIBA. This is a computational estimate, not a laboratory measurement.</p></article>
+          </div>
+        </section>
+        </section>
+      </section>
+
+      <section id="historySection" class="hidden">
+        <section class="hero"><div class="eyebrow">YOUR ACTIVITY</div><h1>Prediction <span>History</span></h1><p id="historyIntro">Review predictions made in this browser tab.</p></section>
+        <div id="historyList" class="history-list"></div>
+      </section>
+      <footer>AffiniX · Drug–target binding affinity research interface</footer>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body></html>

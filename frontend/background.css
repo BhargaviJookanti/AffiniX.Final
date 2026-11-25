@@ -1,0 +1,31 @@
+/* One full-screen video behind the whole website */
+body{overflow-x:hidden}
+#bgVideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;background:#041329}
+#bgOverlay{position:fixed;inset:0;background:rgba(10,18,30,.65);z-index:0;pointer-events:none}
+#authView,#appView{position:relative;z-index:1}
+.auth-shell{background:transparent!important}
+
+/* Let the video show through: panels, cards, fields and the top bar are mostly transparent */
+.panel,.history-card{background:linear-gradient(135deg,rgba(10,24,44,.78),rgba(6,18,36,.84))!important;border-color:#2f6f9c!important;backdrop-filter:blur(2px)!important;box-shadow:0 10px 30px rgba(0,0,0,.35)!important}
+.prediction-form select,.field textarea,.auth-field input,.field .example-select{background:rgba(4,16,32,.85)!important;border-color:#3d7aa6!important}
+.topbar{background:rgba(3,14,30,.7)!important}
+
+/* Big centered headings with space before the prediction section */
+.hero{text-align:center;padding:40px 0 70px}
+.hero h1{font-size:clamp(44px,7vw,96px)!important;line-height:1.05;letter-spacing:-2px;margin:0 0 14px}
+.hero .eyebrow{font-size:14px}
+.hero p{font-size:clamp(16px,1.6vw,21px)!important}
+
+/* Brighter, larger secondary text (subtitles, metric labels, notes) */
+.section-heading p,.science-heading p,.hero p,.metric-kicker,.metric span,.metric-disclaimer,.subheading,.quick-info p,.info-item p,.range-card p,.range-card small,.form-note,.field small,small,.legend,.empty-history,.history-card p,.chart-panel .legend,.meter-labels span,.range-labels span,.auth-footnote{color:#E2E8F0!important}
+.section-heading p,.science-heading p,.metric-disclaimer,.form-note,.range-card small,.history-card p{font-size:16px!important;font-weight:600!important}
+.metric span{font-size:14px!important;font-weight:700!important}
+.metric-kicker,.subheading,.meter-labels span,.range-labels span,.legend{font-size:12px!important;font-weight:700!important}
+.hero p{font-weight:600!important}
+.field small,small{font-size:13px!important;font-weight:600!important}
+
+/* Dark gradients so titles never blend into bright spots in the background */
+.topbar{background:linear-gradient(180deg,rgba(2,10,24,.94),rgba(3,14,30,.72))!important}
+.section-heading,.hero{background:linear-gradient(90deg,rgba(2,10,24,.82),rgba(3,14,30,.45) 70%,rgba(3,14,30,0));border-radius:14px;padding:12px 18px!important}
+.hero{background:radial-gradient(ellipse at center,rgba(2,10,24,.82),rgba(3,14,30,.35) 60%,rgba(3,14,30,0) 85%)!important}
+.section-heading h2,.hero h1,.hero .eyebrow{text-shadow:0 2px 14px rgba(0,0,0,.85)}
